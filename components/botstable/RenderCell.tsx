@@ -5,12 +5,13 @@ import { EditIcon } from "../icons/table/edit-icon";
 import { EyeIcon } from "../icons/table/eye-icon";
 
 interface Props {
-  user: (typeof users)[number];
-  columnKey: string | React.Key;
+  user: Record<string, any>; //
+  columnKey: string | number;
 }
 
-export const RenderCell = ({ user, columnKey }: Props) => {
+export const RenderCell: React.FC<Props> = ({ user, columnKey }) => {
   const cellValue = user[columnKey];
+
   switch (columnKey) {
     case "botType":
       return (
@@ -62,7 +63,7 @@ export const RenderCell = ({ user, columnKey }: Props) => {
       );
     case "actions":
       return (
-        <div className="flex items-center gap-4 ">
+        <div className="flex items-center gap-4">
           <Tooltip content="Details">
             <button onClick={() => console.log("View user", user.id)}>
               <EyeIcon size={20} fill="#979797" />
@@ -81,6 +82,6 @@ export const RenderCell = ({ user, columnKey }: Props) => {
         </div>
       );
     default:
-      return cellValue;
+      return <span>{cellValue}</span>;
   }
 };
