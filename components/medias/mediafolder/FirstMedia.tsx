@@ -10,7 +10,12 @@ import {
   Button,
 } from "@nextui-org/react";
 
-const initialData = [
+type Item = {
+  id: number;
+  folderName: string;
+};
+
+const initialData: Item[] = [
   { id: 1, folderName: "Folder A" },
   { id: 2, folderName: "Folder B" },
   { id: 3, folderName: "Folder C" },
@@ -19,10 +24,14 @@ const initialData = [
 ];
 
 const TableWithCheckboxInHeader = () => {
-  const [items, setItems] = useState(initialData);
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [items, setItems] = useState<Item[]>(initialData); // State for items
+  const [selectedRows, setSelectedRows] = useState<number[]>([]); // State for selected row IDs
 
-  const handleCheckboxChange = (event, id) => {
+  // Handle individual checkbox change
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    id: number
+  ) => {
     if (event.target.checked) {
       setSelectedRows((prevSelected) => [...prevSelected, id]);
     } else {
@@ -32,7 +41,10 @@ const TableWithCheckboxInHeader = () => {
     }
   };
 
-  const handleSelectAllChange = (event) => {
+  // Handle "Select All" checkbox change
+  const handleSelectAllChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (event.target.checked) {
       setSelectedRows(initialData.map((item) => item.id));
     } else {
@@ -40,9 +52,10 @@ const TableWithCheckboxInHeader = () => {
     }
   };
 
+  // Handle delete selected rows
   const handleDeleteSelected = () => {
     const updatedData = items.filter((item) => !selectedRows.includes(item.id));
-    setItems(updatedData); // Update your state with filtered data
+    setItems(updatedData); // Update state with filtered data
     setSelectedRows([]);
   };
 

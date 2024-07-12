@@ -142,7 +142,9 @@ export const TableWrapper = () => {
                     className="rounded w-full md:w-40"
                     label={column.name}
                   >
-                    <SelectItem value="">Select {column.name}</SelectItem>
+                    <SelectItem value="" key={""}>
+                      Select {column.name}
+                    </SelectItem>
                     {column.filterOptions.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}
@@ -178,9 +180,15 @@ export const TableWrapper = () => {
             className="rounded w-full md:w-40"
             label="By In Session"
           >
-            <SelectItem value="">By In Session</SelectItem>
-            <SelectItem value="$.1">Yes</SelectItem>
-            <SelectItem value="$.2">No</SelectItem>
+            <SelectItem value="" key={""}>
+              By In Session
+            </SelectItem>
+            <SelectItem value="$.1" key={""}>
+              Yes
+            </SelectItem>
+            <SelectItem value="$.2" key={""}>
+              No
+            </SelectItem>
           </Select>
           <Input
             type="text"

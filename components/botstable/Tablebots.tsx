@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, ChangeEvent } from "react";
 import {
   Table,
   TableBody,
@@ -20,36 +20,62 @@ import {
 import { columns, initialUsers } from "./data";
 import { RenderCell } from "./RenderCell";
 
-export const Tablebots = () => {
-  const [users, setUsers] = useState(initialUsers);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
-  const [filters, setFilters] = useState({});
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const rowsPerPage = 5;
-  const [selectedAction, setSelectedAction] = useState("");
+interface User {
+  id: number;
+  botIp: string;
+  botId: string;
+  checkBotOffline: string;
+  botType: string;
+  isActive: string;
+  botDataState: string;
+  inSession: string;
+}
 
-  const handleSearch = (event) => {
+interface Filters {
+  [key: string]: string | undefined;
+}
+
+interface SortConfig {
+  key: string;
+  direction: "ascending" | "descending" | "";
+}
+
+const Tablebots: React.FC = () => {
+  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    key: "",
+    direction: "",
+  });
+  const [filters, setFilters] = useState<Filters>({});
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const rowsPerPage: number = 5;
+  const [selectedAction, setSelectedAction] = useState<string>("");
+
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleSort = (columnKey) => {
-    let direction = "ascending";
+  const handleSort = (columnKey: string) => {
+    let direction: "ascending" | "descending" = "ascending";
     if (sortConfig.key === columnKey && sortConfig.direction === "ascending") {
       direction = "descending";
     }
     setSortConfig({ key: columnKey, direction });
   };
 
-  const handleFilterChange = (columnKey, filterValue) => {
+  const handleFilterChange = (columnKey: string, filterValue: string) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       [columnKey]: filterValue === "" ? undefined : filterValue,
     }));
   };
 
-  const handleCheckboxChange = (event, itemId) => {
+  const handleCheckboxChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    itemId: number
+  ) => {
     if (event.target.checked) {
       setSelectedRows((prevSelected) => [...prevSelected, itemId]);
     } else {
@@ -75,7 +101,7 @@ export const Tablebots = () => {
     setSelectedRows([]);
   };
 
-  const handleStateChange = (action) => {
+  const handleStateChange = (action: string) => {
     const updatedUsers = users.map((user) => {
       if (selectedRows.includes(user.id)) {
         return { ...user, isActive: action === "yes" ? "Yes" : "No" };
@@ -86,7 +112,7 @@ export const Tablebots = () => {
     setSelectedRows([]);
   };
 
-  const handleActionButtonClick = (action) => {
+  const handleActionButtonClick = (action: string) => {
     setSelectedAction(action);
     if (action === "delete") {
       handleDeleteSelected();
@@ -95,7 +121,7 @@ export const Tablebots = () => {
     }
   };
 
-  const handleDropdownAction = (action) => {
+  const handleDropdownAction = (action: string) => {
     setSelectedAction(action);
     if (action === "delete") {
       handleDeleteSelected();
@@ -109,10 +135,16 @@ export const Tablebots = () => {
 
     // Apply filters
     Object.keys(filters).forEach((key) => {
-      if (filters[key] !== undefined && filters[key] !== "") {
+      if (
+        filters[key as keyof User] !== undefined &&
+        filters[key as keyof User] !== ""
+      ) {
         filtered = filtered.filter((user) => {
-          const userValue = user[key]?.toString().toLowerCase() || "";
-          const filterValue = filters[key].toString().toLowerCase();
+          const userValue = (user[key as keyof User] ?? "")
+            .toString()
+            .toLowerCase();
+          const filterValue =
+            filters[key as keyof User]!.toString().toLowerCase();
           return userValue.includes(filterValue);
         });
       }
@@ -127,13 +159,16 @@ export const Tablebots = () => {
       );
     }
 
+    // Assuming SortConfig is properly defined
+
     // Apply sorting
     if (sortConfig.key) {
       filtered.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        const key = sortConfig.key as keyof User; // Type assertion here
+        if (a[key] < b[key]) {
           return sortConfig.direction === "ascending" ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (a[key] > b[key]) {
           return sortConfig.direction === "ascending" ? 1 : -1;
         }
         return 0;
@@ -261,7 +296,11 @@ export const Tablebots = () => {
                   ) : columnKey === "id" ? (
                     item.id
                   ) : (
-                    <RenderCell user={item} columnKey={columnKey} />
+                    <RenderCell
+                      user={item}
+                      columnKey={columnKey}
+                      columnData={columns}
+                    />
                   )}
                 </TableCell>
               )}
@@ -270,27 +309,16 @@ export const Tablebots = () => {
         </TableBody>
       </Table>
 
-      <div className="flex justify-center items-center mt-4">
-        <div className="flex justify-center items-center space-x-4">
-          <Button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-          >
-            Previous
-          </Button>
-          <Pagination
-            page={currentPage}
-            total={totalPages}
-            onChange={(page) => setCurrentPage(page)}
-          />
-          <Button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            Next
-          </Button>
-        </div>
+      <div className="flex justify-end">
+        <Pagination
+          total={totalPages}
+          initialPage={1}
+          currentPage={currentPage}
+          onChange={(page) => setCurrentPage(page)}
+        />
       </div>
     </div>
   );
 };
+
+export default Tablebots;

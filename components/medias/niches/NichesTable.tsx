@@ -61,7 +61,7 @@ const CheckboxTableWithDeleteButton: React.FC = () => {
         <TableHeader>
           <TableColumn>
             <Checkbox
-              indeterminate={
+              isIndeterminate={
                 selectedRows.length > 0 && selectedRows.length < data.length
               }
               checked={selectedRows.length === data.length}

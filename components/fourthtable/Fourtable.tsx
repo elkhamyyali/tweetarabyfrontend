@@ -3,9 +3,9 @@ import { FaPlus, FaSearch } from "react-icons/fa";
 
 function Fourthtable() {
   // Define state variables
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
-  const [filterOption, setFilterOption] = useState("All");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [filterOption, setFilterOption] = useState<string>("All");
 
   // Sample data (replace with your actual data)
   const data = [
@@ -62,26 +62,30 @@ function Fourthtable() {
   ];
 
   // Function to handle search input changes
-  const handleSearchInputChange = (event) => {
-    const query = event.target.value;
-    setSearchQuery(query);
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const query = event.target.value.toLowerCase(); // Get the current value from the input field in lowercase
+    setSearchQuery(query); // Update the state with the search query
+
     // Filter data based on the search query
     const filtered = data.filter((item) =>
-      item.domain.toLowerCase().includes(query.toLowerCase())
+      item.domain.toLowerCase().includes(query)
     );
-    setFilteredData(filtered);
+    setFilteredData(filtered); // Update filtered data state
   };
 
   // Function to handle filter select changes
-  const handleFilterChange = (event) => {
+  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const option = event.target.value;
-    setFilterOption(option);
+    setFilterOption(option); // Update filter option state
+
     if (option === "All") {
-      setFilteredData([]);
+      setFilteredData([]); // Reset filtered data
     } else {
       // Filter data based on the selected option
       const filtered = data.filter((item) => item.domain === option);
-      setFilteredData(filtered);
+      setFilteredData(filtered); // Update filtered data state
     }
   };
 
@@ -128,8 +132,8 @@ function Fourthtable() {
               style={{ paddingLeft: "0.52rem", paddingRight: "0rem" }}
             >
               <option value="All">All Items</option>
-              {data.map((item) => (
-                <option key={item.domain} value={item.domain}>
+              {data.map((item, index) => (
+                <option key={index} value={item.domain}>
                   {item.domain}
                 </option>
               ))}
@@ -271,32 +275,11 @@ function Fourthtable() {
                       </div>
                     </div>
                   </td>
-                  <td className="p-1 text-center">
-                    <div
-                      style={{
-                        color:
-                          item.status === "Active"
-                            ? "#047857"
-                            : item.status === "pending"
-                            ? "#9B2C2C"
-                            : "#000000",
-                        backgroundColor:
-                          item.status === "Active"
-                            ? "#D1FAE5"
-                            : item.status === "pending"
-                            ? "#FECDD3"
-                            : "#E5E7EB",
-                        padding: "5px",
-                        borderRadius: "5px",
-                      }}
-                      className="w-fit"
-                    >
-                      {item.status}
-                    </div>
-                  </td>
-                  <td className="text-left ">
-                    <div className="flex flex-col items-start font bg-gray-100 p-2 rounded-md w-fit text-center dark:bg-neutral-800">
-                      <FaPlus style={{ fontSize: "10px" }} />
+                  <td className="p-1">
+                    <div className="flex items-center">
+                      <span className="bg-green-100 text-green-800 dark:bg-green-700 dark:text-slate-200 rounded-md px-2 py-0.5 text-xs font-semibold">
+                        {item.status}
+                      </span>
                     </div>
                   </td>
                 </tr>

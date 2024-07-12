@@ -56,7 +56,7 @@ const TweetTable: React.FC = () => {
         <TableHeader>
           <TableColumn>
             <Checkbox
-              indeterminate={
+              isIndeterminate={
                 selectedRows.length > 0 && selectedRows.length < tweets.length
               }
               checked={selectedRows.length === tweets.length}
