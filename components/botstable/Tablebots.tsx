@@ -245,7 +245,9 @@ const Tablebots: React.FC = () => {
                     className="rounded w-full md:w-40"
                     label={column.name}
                   >
-                    <SelectItem value="">Select {column.name}</SelectItem>
+                    <SelectItem key={""} value="">
+                      Select {column.name}
+                    </SelectItem>
                     {column.filterOptions.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}
