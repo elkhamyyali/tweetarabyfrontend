@@ -10,9 +10,10 @@ import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { UsersIcon } from "@/components/icons/breadcrumb/users-icon";
 import { SettingsIcon } from "@/components/icons/sidebar/settings-icon";
 import { TableWrapper } from "@/components/table/table";
-import { Tablebots } from "@/components/botstable/Tablebots";
+
 import { AddUser } from "./add-user";
 import UploadForm from "../medias/words/UploadForm";
+import Tablebots from "../botstable/Tablebots";
 
 export const Accounts = () => {
   return (
