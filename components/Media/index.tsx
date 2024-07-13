@@ -8,7 +8,7 @@ import CheckboxTable from "../medias/niches/NichesTable";
 import TweetTable from "../medias/tweets/TweetsTable";
 import DataTable from "../medias/tweetsformulas/Formula";
 import TableExample from "../medias/words/WordText";
-import UploadForm from "../medias/words/UploadForm";
+// import UploadForm from "../medias/words/UploadForm";
 
 export const Media = () => {
   return (
