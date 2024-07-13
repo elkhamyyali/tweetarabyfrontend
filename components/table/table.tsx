@@ -13,45 +13,63 @@ import {
   Button,
 } from "@nextui-org/react";
 import { columns, users as initialUsers } from "./data";
-import { RenderCell } from "./render-cell"; // Assuming RenderCell is in RenderCell.js
+import { RenderCell } from "./render-cell"; // Assuming RenderCell is in RenderCell.tsx
+
+interface User {
+  id: number;
+  username: string;
+  accountState: string;
+  isActive: string;
+  accountType: string;
+  inSession: string;
+}
+
+interface SortConfig {
+  key: keyof User;
+  direction: "ascending" | "descending";
+}
 
 export const TableWrapper = () => {
-  const [users, setUsers] = useState(initialUsers);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
-  const [filters, setFilters] = useState({});
-  const [currentPage, setCurrentPage] = useState(1);
+  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    key: "id",
+    direction: "ascending",
+  });
+  const [filters, setFilters] = useState<
+    Partial<Record<keyof User, string | undefined>>
+  >({});
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const rowsPerPage = 12;
 
-  const handleSearch = (event) => {
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleSort = (columnKey) => {
-    let direction = "ascending";
+  const handleSort = (columnKey: keyof User) => {
+    let direction: "ascending" | "descending" = "ascending";
     if (sortConfig.key === columnKey && sortConfig.direction === "ascending") {
       direction = "descending";
     }
     setSortConfig({ key: columnKey, direction });
   };
 
-  const handleFilterChange = (columnKey, filterValue) => {
+  const handleFilterChange = (columnKey: keyof User, filterValue: string) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       [columnKey]: filterValue === "" ? undefined : filterValue,
     }));
   };
 
-  const handleInSessionFilterChange = (event) => {
+  const handleInSessionFilterChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const filterValue =
       event.target.value === "$.1"
         ? "Yes"
         : event.target.value === "$.2"
         ? "No"
         : undefined;
-    console.log(
-      `handleInSessionFilterChange called with value: ${filterValue}`
-    );
     setFilters((prevFilters) => ({
       ...prevFilters,
       inSession: filterValue,
@@ -60,20 +78,21 @@ export const TableWrapper = () => {
 
   const filteredUsers = useMemo(() => {
     let filtered = [...initialUsers];
-    console.log("Initial Users:", filtered);
-    console.log("Filters:", filters);
 
     // Apply filters
     Object.keys(filters).forEach((key) => {
-      if (filters[key] !== undefined && filters[key] !== "") {
+      const filterValue = filters[key as keyof typeof filters]
+        ?.toString()
+        .toLowerCase();
+      if (filterValue !== undefined && filterValue !== "") {
         if (key === "inSession") {
-          console.log(`Filtering inSession ${filters[key]}`);
-          filtered = filtered.filter((user) => user.inSession === filters[key]);
-          console.log("Filtered Users:", filtered);
+          filtered = filtered.filter(
+            (user) => user.inSession.toLowerCase() === filterValue
+          );
         } else {
           filtered = filtered.filter((user) => {
-            const userValue = user[key]?.toString().toLowerCase() || "";
-            const filterValue = filters[key].toString().toLowerCase();
+            const userValue =
+              user[key as keyof User]?.toString().toLowerCase() || "";
             return userValue.includes(filterValue);
           });
         }
@@ -92,17 +111,17 @@ export const TableWrapper = () => {
     // Apply sorting
     if (sortConfig.key) {
       filtered.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        const key = sortConfig.key;
+        if (a[key] < b[key]) {
           return sortConfig.direction === "ascending" ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (a[key] > b[key]) {
           return sortConfig.direction === "ascending" ? 1 : -1;
         }
         return 0;
       });
     }
 
-    console.log("Final Filtered Users:", filtered);
     return filtered;
   }, [initialUsers, searchTerm, sortConfig, filters]);
 
@@ -135,14 +154,17 @@ export const TableWrapper = () => {
                 <label className="text-center">{column.name}</label>
                 {column.filterOptions ? (
                   <Select
-                    value={filters[column.uid] || ""}
+                    value={filters[column.uid as keyof User] || ""}
                     onChange={(e) =>
-                      handleFilterChange(column.uid, e.target.value)
+                      handleFilterChange(
+                        column.uid as keyof User,
+                        e.target.value
+                      )
                     }
                     className="rounded w-full md:w-40"
                     label={column.name}
                   >
-                    <SelectItem value="" key={""}>
+                    <SelectItem value="" key="">
                       Select {column.name}
                     </SelectItem>
                     {column.filterOptions.map((option) => (
@@ -155,9 +177,12 @@ export const TableWrapper = () => {
                   <Input
                     type="text"
                     placeholder={`Filter by ${column.name}`}
-                    value={filters[column.uid] || ""}
+                    value={filters[column.uid as keyof User] || ""}
                     onChange={(e) =>
-                      handleFilterChange(column.uid, e.target.value)
+                      handleFilterChange(
+                        column.uid as keyof User,
+                        e.target.value
+                      )
                     }
                     className="p-2 rounded w-full md:w-auto"
                   />
@@ -180,20 +205,20 @@ export const TableWrapper = () => {
             className="rounded w-full md:w-40"
             label="By In Session"
           >
-            <SelectItem value="" key={""}>
+            <SelectItem value="" key="">
               By In Session
             </SelectItem>
-            <SelectItem value="$.1" key={""}>
+            <SelectItem value="$.1" key="">
               Yes
             </SelectItem>
-            <SelectItem value="$.2" key={""}>
+            <SelectItem value="$.2" key="">
               No
             </SelectItem>
           </Select>
           <Input
             type="text"
             placeholder="Filter By Session ID"
-            value={filters.id || ""}
+            value={filters.id?.toString() || ""}
             onChange={(e) => handleFilterChange("id", e.target.value)}
             className="p-2 rounded w-full md:w-auto"
           />
@@ -207,7 +232,7 @@ export const TableWrapper = () => {
               key={column.uid}
               hideHeader={column.uid === "actions"}
               align={column.uid === "actions" ? "center" : "start"}
-              onClick={() => handleSort(column.uid)}
+              onClick={() => handleSort(column.uid as keyof User)}
             >
               {column.name}
             </TableColumn>

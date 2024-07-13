@@ -6,32 +6,54 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  Input,
   Select,
   SelectItem,
-  Pagination,
   Button,
+  Input,
+  Pagination,
 } from "@nextui-org/react";
 import { columns, initialData } from "./dataNew";
 import RenderCellNew from "./RenderCellNew";
 
-const TableNew = () => {
-  const [data, setData] = useState(initialData);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
-  const [filters, setFilters] = useState({
-    campaign: "",
-    limitedRepeatance: "",
-    sessionHandler: "",
-  });
-  const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 5;
+// Define the User interface
+interface User {
+  id: number;
+  campaignName: string;
+  sessionNiche: string;
+  burnerBots: string;
+  isActive: boolean;
+  mainType: string;
+  subType: string;
+}
 
-  const handleSearch = (event) => {
+const TableNew: React.FC = () => {
+  const [data, setData] = useState<User[]>(initialData);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof User | "";
+    direction: string;
+  }>({
+    key: "",
+    direction: "",
+  });
+  const [filters, setFilters] = useState<{
+    isActive?: string;
+    mainType?: string;
+    subType?: string;
+  }>({});
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+
+  const rowsPerPage: number = 5;
+
+  // Handle search input change
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleSort = (columnKey) => {
+  // Handle sorting by column
+  const handleSort = (columnKey: keyof User | "") => {
     let direction = "ascending";
     if (sortConfig.key === columnKey && sortConfig.direction === "ascending") {
       direction = "descending";
@@ -39,43 +61,91 @@ const TableNew = () => {
     setSortConfig({ key: columnKey, direction });
   };
 
-  const handleFilterChange = (columnKey, filterValue) => {
+  // Handle filter change for isActive, mainType, and subType
+  const handleFilterChange = (columnKey: keyof User, filterValue: string) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       [columnKey]: filterValue === "" ? undefined : filterValue,
     }));
   };
 
+  // Handle checkbox change for selecting rows
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    itemId: number
+  ) => {
+    if (event.target.checked) {
+      setSelectedRows((prevSelected) => [...prevSelected, itemId]);
+    } else {
+      setSelectedRows((prevSelected) =>
+        prevSelected.filter((id) => id !== itemId)
+      );
+    }
+  };
+
+  // Handle select all checkbox change
+  const handleSelectAllChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSelectAllChecked(event.target.checked);
+    if (event.target.checked) {
+      const allIds = data.map((item) => item.id);
+      setSelectedRows(allIds);
+    } else {
+      setSelectedRows([]);
+    }
+  };
+
+  // Handle delete selected rows
+  const handleDeleteSelected = () => {
+    const updatedData = data.filter((item) => !selectedRows.includes(item.id));
+    setData(updatedData);
+    setSelectedRows([]);
+    setSelectAllChecked(false);
+  };
+
+  // Memoized filtered and paginated data
   const filteredData = useMemo(() => {
     let filtered = [...data];
 
     // Apply filters
     Object.keys(filters).forEach((key) => {
-      if (filters[key] !== undefined && filters[key] !== "") {
-        filtered = filtered.filter((item) => {
-          const itemValue = item[key]?.toString().toLowerCase() || "";
-          const filterValue = filters[key].toString().toLowerCase();
-          return itemValue.includes(filterValue);
-        });
+      const filterKey = key as keyof typeof filters;
+      if (filters[filterKey] !== undefined && filters[filterKey] !== "") {
+        if (filterKey === "isActive") {
+          const isActiveFilter = filters[filterKey] === "Yes";
+          filtered = filtered.filter(
+            (item) => item[filterKey] === isActiveFilter
+          );
+        } else {
+          filtered = filtered.filter((item) =>
+            item[filterKey]
+              ?.toLowerCase()
+              .includes(filters[filterKey]?.toLowerCase() || "")
+          );
+        }
       }
     });
 
     // Apply search
     if (searchTerm) {
       filtered = filtered.filter((item) =>
-        Object.values(item).some((value) =>
-          value?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            typeof value === "string" &&
+            value.toLowerCase().includes(searchTerm.toLowerCase())
         )
       );
     }
 
     // Apply sorting
-    if (sortConfig.key) {
+    if (sortConfig.key !== "") {
       filtered.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        const key = sortConfig.key as keyof User;
+        if (a[key] < b[key]) {
           return sortConfig.direction === "ascending" ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (a[key] > b[key]) {
           return sortConfig.direction === "ascending" ? 1 : -1;
         }
         return 0;
@@ -89,66 +159,48 @@ const TableNew = () => {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     return filteredData.slice(startIndex, endIndex);
-  }, [filteredData, currentPage]);
+  }, [filteredData, currentPage, rowsPerPage]);
 
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <Input
-        type="text"
-        placeholder="Search..."
-        value={searchTerm}
-        onChange={handleSearch}
-        className="p-2 rounded w-full md:w-auto"
-      />
       <div className="flex flex-wrap gap-4 mb-4">
-        {columns.map(
-          (column) =>
-            column.uid !== "id" && (
-              <div
-                key={column.uid}
-                className="flex flex-col md:flex-row md:items-center md:space-x-4"
+        <Input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="p-2 rounded w-full md:w-auto"
+        />
+        {columns.map((column) => (
+          <div
+            key={column.uid}
+            className="flex flex-col md:flex-row md:items-center md:space-x-4"
+          >
+            {(column.uid === "isActive" ||
+              column.uid === "mainType" ||
+              column.uid === "subType") && (
+              <Select
+                value={filters[column.uid] || ""}
+                onChange={(e) =>
+                  handleFilterChange(column.uid as keyof User, e.target.value)
+                }
+                className="rounded w-full md:w-40"
+                label={column.name}
               >
-                {column.uid === "inSession" ? (
-                  <Input
-                    type="text"
-                    placeholder="Filter By Session ID"
-                    value={filters.id || ""}
-                    onChange={(e) => handleFilterChange("id", e.target.value)}
-                    className="p-2 rounded w-full md:w-auto"
-                  />
-                ) : column.filterOptions ? (
-                  <Select
-                    value={filters[column.uid] || ""}
-                    onChange={(e) =>
-                      handleFilterChange(column.uid, e.target.value)
-                    }
-                    className="rounded w-full md:w-40"
-                    label={
-                      column.uid === "sessionHandler"
-                        ? "Session Handler"
-                        : column.name
-                    }
-                  >
-                    <SelectItem value="">
-                      Select{" "}
-                      {column.uid === "sessionHandler"
-                        ? "Session Handler"
-                        : column.name}
-                    </SelectItem>
-                    {column.filterOptions.map((option) => (
-                      <SelectItem key={option} value={option}>
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                ) : (
-                  ""
-                )}
-              </div>
-            )
-        )}
+                <SelectItem key="" value="">
+                  Select {column.name}
+                </SelectItem>
+                {column.filterOptions?.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </Select>
+            )}
+          </div>
+        ))}
       </div>
 
       <Table aria-label="Example table with custom cells">
@@ -158,11 +210,16 @@ const TableNew = () => {
               key={column.uid}
               hideHeader={column.uid === "actions"}
               align={column.uid === "actions" ? "center" : "start"}
-              onClick={() => handleSort(column.uid)}
+              onClick={() => handleSort(column.uid as keyof User)}
             >
-              {column.uid === "sessionHandler"
-                ? "Session Handler"
-                : column.name}
+              {column.name === "" ? (
+                <Checkbox
+                  checked={selectAllChecked}
+                  onChange={handleSelectAllChange}
+                />
+              ) : (
+                column.name
+              )}
             </TableColumn>
           )}
         </TableHeader>
@@ -174,7 +231,19 @@ const TableNew = () => {
             >
               {(columnKey) => (
                 <TableCell key={columnKey}>
-                  <RenderCellNew data={item} columnKey={columnKey} />
+                  {columnKey === "id" ? (
+                    item.id // Display ID directly
+                  ) : columnKey === "selectAll" ? (
+                    <Checkbox
+                      checked={selectedRows.includes(item.id)}
+                      onChange={(e) => handleCheckboxChange(e, item.id)}
+                    />
+                  ) : (
+                    <RenderCellNew
+                      data={item}
+                      columnKey={columnKey as keyof User}
+                    />
+                  )}
                 </TableCell>
               )}
             </TableRow>
@@ -182,7 +251,7 @@ const TableNew = () => {
         </TableBody>
       </Table>
 
-      <div className="flex justify-center items-center mt-4">
+      <div className="flex justify-between items-center mt-4">
         <div className="flex justify-center items-center space-x-4">
           <Button
             disabled={currentPage === 1}
@@ -202,6 +271,12 @@ const TableNew = () => {
             Next
           </Button>
         </div>
+        <Button
+          disabled={selectedRows.length === 0}
+          onClick={handleDeleteSelected}
+        >
+          Delete Selected
+        </Button>
       </div>
     </div>
   );

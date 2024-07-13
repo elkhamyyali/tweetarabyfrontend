@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, ChangeEvent } from "react";
 import {
   Table,
   TableBody,
@@ -16,39 +16,60 @@ import {
 import { columns, initialSessions } from "./data";
 import RenderCellNew from "./RenderCell";
 
-const TableSessions = () => {
-  const [sessions, setSessions] = useState(initialSessions);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: "", direction: "" });
-  const [filters, setFilters] = useState({});
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [selectAllChecked, setSelectAllChecked] = useState(false);
+// Define types
+type Filters = {
+  [key: string]: string | undefined;
+};
 
-  const rowsPerPage = 5;
+type SortConfig = {
+  key: string;
+  direction: "ascending" | "descending" | "";
+};
 
-  const handleSearch = (event) => {
+type Session = {
+  id: number;
+  [key: string]: string | number | boolean;
+};
+
+const TableSessions: React.FC = () => {
+  const [sessions, setSessions] = useState<Session[]>(initialSessions);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    key: "",
+    direction: "",
+  });
+  const [filters, setFilters] = useState<Filters>({});
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false);
+
+  const rowsPerPage: number = 5;
+
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleSort = (columnKey) => {
-    let direction = "ascending";
+  const handleSort = (columnKey: string) => {
+    let direction: "ascending" | "descending" = "ascending";
     if (sortConfig.key === columnKey && sortConfig.direction === "ascending") {
       direction = "descending";
     }
     setSortConfig({ key: columnKey, direction });
   };
 
-  const handleFilterChange = (columnKey, filterValue) => {
+  const handleFilterChange = (columnKey: string, filterValue: string) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       [columnKey]: filterValue === "" ? undefined : filterValue,
     }));
   };
 
-  const handleCheckboxChange = (event, id) => {
+  const handleCheckboxChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    id: number
+  ) => {
     if (event.target) {
-      const isChecked = event.target.checked;
+      const isChecked: boolean = event.target.checked;
       if (isChecked) {
         setSelectedRows((prevSelected) => [...prevSelected, id]);
       } else {
@@ -59,11 +80,11 @@ const TableSessions = () => {
     }
   };
 
-  const handleSelectAllChange = (event) => {
-    const isChecked = event.target.checked;
+  const handleSelectAllChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const isChecked: boolean = event.target.checked;
     setSelectAllChecked(isChecked);
     if (isChecked) {
-      const allIds = sessions.map((session) => session.id);
+      const allIds: number[] = sessions.map((session) => session.id);
       setSelectedRows(allIds);
     } else {
       setSelectedRows([]);
@@ -71,7 +92,7 @@ const TableSessions = () => {
   };
 
   const handleDeleteSelected = () => {
-    const updatedSessions = sessions.filter(
+    const updatedSessions: Session[] = sessions.filter(
       (session) => !selectedRows.includes(session.id)
     );
     setSessions(updatedSessions);
@@ -79,8 +100,8 @@ const TableSessions = () => {
     setSelectAllChecked(false);
   };
 
-  const filteredSessions = useMemo(() => {
-    let filtered = [...sessions];
+  const filteredSessions: Session[] = useMemo(() => {
+    let filtered: Session[] = [...sessions];
 
     // Apply filters
     Object.keys(filters).forEach((key) => {
@@ -98,8 +119,10 @@ const TableSessions = () => {
         }
       } else if (filters[key] !== undefined && filters[key] !== "") {
         filtered = filtered.filter((session) => {
-          const sessionValue = session[key]?.toString().toLowerCase() || "";
-          const filterValue = filters[key].toString().toLowerCase();
+          const sessionValue: string =
+            session[key]?.toString().toLowerCase() || "";
+          const filterValue: string =
+            filters[key]?.toString().toLowerCase() || "";
           return sessionValue.includes(filterValue);
         });
       }
@@ -128,13 +151,13 @@ const TableSessions = () => {
     return filtered;
   }, [searchTerm, sortConfig, filters, sessions]);
 
-  const paginatedSessions = useMemo(() => {
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
+  const paginatedSessions: Session[] = useMemo(() => {
+    const startIndex: number = (currentPage - 1) * rowsPerPage;
+    const endIndex: number = startIndex + rowsPerPage;
     return filteredSessions.slice(startIndex, endIndex);
   }, [filteredSessions, currentPage]);
 
-  const totalPages = Math.ceil(filteredSessions.length / rowsPerPage);
+  const totalPages: number = Math.ceil(filteredSessions.length / rowsPerPage);
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -148,12 +171,14 @@ const TableSessions = () => {
         />
         {columns.map(
           (column) =>
-            column.uid !== "checkbox" && ( // Exclude the checkbox column from filters
+            column.uid !== "checkbox" && (
               <div
                 key={column.uid}
                 className="flex flex-col md:flex-row md:items-center md:space-x-4"
               >
-                {column.uid === "isActive" ? (
+                {column.uid === "isActive" ||
+                column.uid === "sessionState" ||
+                column.uid === "sessionType" ? (
                   <Select
                     value={filters[column.uid] || ""}
                     onChange={(e) =>
@@ -169,26 +194,7 @@ const TableSessions = () => {
                       </SelectItem>
                     ))}
                   </Select>
-                ) : column.uid === "sessionState" ||
-                  column.uid === "sessionType" ? (
-                  <Select
-                    value={filters[column.uid] || ""}
-                    onChange={(e) =>
-                      handleFilterChange(column.uid, e.target.value)
-                    }
-                    className="rounded w-full md:w-40"
-                    label={column.name}
-                  >
-                    <SelectItem value="">Select {column.name}</SelectItem>
-                    {column.filterOptions?.map((option) => (
-                      <SelectItem key={option} value={option}>
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                ) : (
-                  ""
-                )}
+                ) : null}
               </div>
             )
         )}
@@ -203,7 +209,7 @@ const TableSessions = () => {
               align={column.uid === "actions" ? "center" : "start"}
               onClick={() => handleSort(column.uid)}
             >
-              {column.name === "" ? (
+              {column.uid === "selectAll" ? (
                 <Checkbox
                   checked={selectAllChecked}
                   onChange={handleSelectAllChange}

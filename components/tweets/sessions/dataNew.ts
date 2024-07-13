@@ -1,4 +1,3 @@
-// dataNew.ts
 export const initialData = [
   {
     id: 1,
@@ -80,6 +79,3 @@ export const columns = [
   { name: "Burner Bots", uid: "burnerBots" },
   { name: "Is Active", uid: "isActive", filterOptions: ["Yes", "No"] },
 ];
-
-
-

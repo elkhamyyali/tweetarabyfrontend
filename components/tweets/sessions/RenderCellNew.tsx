@@ -1,8 +1,21 @@
-// RenderCellNew.tsx
 import React from "react";
 import { Chip } from "@nextui-org/react";
 
-const RenderCellNew = ({ data, columnKey }) => {
+interface User {
+  id: number;
+  campaignName: string;
+  sessionNiche: string;
+  burnerBots: string;
+  isActive: boolean;
+  // Add other properties as needed based on your User interface
+}
+
+interface Props {
+  data: User;
+  columnKey: keyof User; // columnKey should be a valid key of User
+}
+
+const RenderCellNew: React.FC<Props> = ({ data, columnKey }) => {
   const cellValue = data[columnKey];
 
   switch (columnKey) {
