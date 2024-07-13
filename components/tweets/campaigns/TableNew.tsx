@@ -11,6 +11,7 @@ import {
   Button,
   Input,
   Pagination,
+  Checkbox,
 } from "@nextui-org/react";
 import { columns, initialData } from "./dataNew";
 import RenderCellNew from "./RenderCellNew";
