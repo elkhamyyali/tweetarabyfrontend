@@ -1,7 +1,27 @@
 import React from "react";
 import { Chip } from "@nextui-org/react";
 
-const RenderCellNew = ({ data, columnKey }) => {
+// Define the User interface if not already defined
+interface User {
+  id: number;
+  campaignName: string;
+  sessionNiche: string;
+  burnerBots: string;
+  isActive: boolean;
+  mainType: string;
+  subType: string;
+  limitedRepeatance: boolean;
+  inSession: string;
+  // Add other properties as needed
+}
+
+// Define Props interface for RenderCellNew component
+interface Props {
+  data: User;
+  columnKey: keyof User;
+}
+
+const RenderCellNew: React.FC<Props> = ({ data, columnKey }) => {
   const cellValue = data[columnKey];
 
   switch (columnKey) {
@@ -38,11 +58,12 @@ const RenderCellNew = ({ data, columnKey }) => {
         </Chip>
       );
     case "limitedRepeatance":
-      return cellValue ? "Yes" : "No";
+      return cellValue ? <span>Yes</span> : <span>No</span>;
     case "inSession":
       return <span>{cellValue}</span>;
     default:
-      return cellValue;
+      // Handle other cases if necessary
+      return <span>{String(cellValue)}</span>; // Convert to string if not JSX
   }
 };
 

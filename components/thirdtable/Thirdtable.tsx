@@ -11,7 +11,7 @@ import {
   FaArrowRight,
   FaArrowLeft,
 } from "react-icons/fa";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 type Customer = {
   id: string;
@@ -21,7 +21,7 @@ type Customer = {
   spent: string;
   availability: string;
   chartData: number[];
-  image: string;
+  image: StaticImageData;
   color: string;
 };
 

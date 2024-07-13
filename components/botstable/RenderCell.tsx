@@ -3,13 +3,23 @@ import { Tooltip, Chip } from "@nextui-org/react";
 import { DeleteIcon } from "../icons/table/delete-icon";
 import { EditIcon } from "../icons/table/edit-icon";
 import { EyeIcon } from "../icons/table/eye-icon";
-
-interface Props {
-  user: Record<string, any>; //
-  columnKey: string | number;
+interface Column {
+  uid: string;
+  name: string;
+  filterOptions?: string[];
 }
 
-export const RenderCell: React.FC<Props> = ({ user, columnKey }) => {
+interface Props {
+  user: Record<string, any>;
+  columnKey: string | number;
+  columnData: Column[];
+}
+
+export const RenderCell: React.FC<Props> = ({
+  user,
+  columnKey,
+  columnData,
+}) => {
   const cellValue = user[columnKey];
 
   switch (columnKey) {

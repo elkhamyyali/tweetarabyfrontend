@@ -169,7 +169,7 @@ const TableSessions: React.FC = () => {
           onChange={handleSearch}
           className="p-2 rounded w-full md:w-auto"
         />
-        {columns.map(
+        {/* {columns.map(
           (column) =>
             column.uid !== "checkbox" && (
               <div
@@ -197,7 +197,7 @@ const TableSessions: React.FC = () => {
                 ) : null}
               </div>
             )
-        )}
+        )} */}
       </div>
 
       <Table aria-label="Sessions table with custom cells">

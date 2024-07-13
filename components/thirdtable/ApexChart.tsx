@@ -7,45 +7,7 @@ interface ApexChartProps {
 }
 
 interface ApexChartState {
-  options: {
-    chart: {
-      height: number;
-      width: number;
-      type: string;
-      toolbar: {
-        show: boolean;
-      };
-      sparkline: {
-        enabled: boolean;
-      };
-    };
-    dataLabels: {
-      enabled: boolean;
-    };
-    stroke: {
-      curve: string;
-      width: number;
-    };
-    grid: {
-      show: boolean;
-    };
-    xaxis: {
-      labels: {
-        show: boolean;
-      };
-      axisBorder: {
-        show: boolean;
-      };
-    };
-    yaxis: {
-      labels: {
-        show: boolean;
-      };
-      axisBorder: {
-        show: boolean;
-      };
-    };
-  };
+  options: ApexCharts.ApexOptions;
 }
 
 class ApexChart extends Component<ApexChartProps, ApexChartState> {
@@ -57,7 +19,7 @@ class ApexChart extends Component<ApexChartProps, ApexChartState> {
         chart: {
           height: 50,
           width: 50,
-          type: "line",
+          type: "line", // Specify the chart type here
           toolbar: {
             show: false,
           },
@@ -101,11 +63,8 @@ class ApexChart extends Component<ApexChartProps, ApexChartState> {
     return (
       <div
         style={{
-          width: "10%",
-          height: "10%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          width: "100%",
+          height: "300px", // Adjust height as needed
         }}
       >
         <ReactApexChart
@@ -113,9 +72,8 @@ class ApexChart extends Component<ApexChartProps, ApexChartState> {
           series={data.map((item, index) => ({
             name: `Series ${index + 1}`,
             data: item.chartData,
-            color: color, // Pass the color prop to each series
           }))}
-          type="line"
+          type="line" // Specify the chart type here as well
         />
       </div>
     );

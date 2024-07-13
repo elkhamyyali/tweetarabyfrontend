@@ -237,23 +237,24 @@ const Tablebots: React.FC = () => {
                     className="p-2 rounded w-full md:w-auto"
                   />
                 ) : column.filterOptions ? (
-                  <Select
-                    value={filters[column.uid] || ""}
-                    onChange={(e) =>
-                      handleFilterChange(column.uid, e.target.value)
-                    }
-                    className="rounded w-full md:w-40"
-                    label={column.name}
-                  >
-                    <SelectItem key={""} value="">
-                      Select {column.name}
-                    </SelectItem>
-                    {column.filterOptions.map((option) => (
-                      <SelectItem key={option} value={option}>
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </Select>
+                  // <Select
+                  //   value={filters[column.uid] || ""}
+                  //   onChange={(e) =>
+                  //     handleFilterChange(column.uid, e.target.value)
+                  //   }
+                  //   className="rounded w-full md:w-40"
+                  //   label={column.name}
+                  // >
+                  //   <SelectItem key={""} value="">
+                  //     Select {column.name}
+                  //   </SelectItem>
+                  //   {column.filterOptions.map((option) => (
+                  //     <SelectItem key={option} value={option}>
+                  //       {option}
+                  //     </SelectItem>
+                  //   ))}
+                  // </Select>
+                  ""
                 ) : (
                   ""
                 )}
@@ -314,9 +315,8 @@ const Tablebots: React.FC = () => {
       <div className="flex justify-end">
         <Pagination
           total={totalPages}
-          initialPage={1}
-          currentPage={currentPage}
-          onChange={(page) => setCurrentPage(page)}
+          initialPage={currentPage}
+          onChange={(page: number) => setCurrentPage(page)}
         />
       </div>
     </div>

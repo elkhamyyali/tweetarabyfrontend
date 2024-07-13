@@ -54,7 +54,7 @@ export const Accounts = () => {
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
           <AddUser />
-          <UploadForm />
+          {/* <UploadForm /> */}
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">

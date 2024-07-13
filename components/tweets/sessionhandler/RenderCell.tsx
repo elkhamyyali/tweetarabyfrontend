@@ -1,12 +1,24 @@
 import React from "react";
 import { Chip } from "@nextui-org/react";
 
-const RenderCellNew = ({ data, columnKey }) => {
+interface Props {
+  data: any; // Replace 'any' with the type of your data object if possible
+  columnKey: string; // Adjust the type of columnKey as needed
+}
+
+const RenderCellNew: React.FC<Props> = ({ data, columnKey }) => {
   const cellValue = data[columnKey];
 
   switch (columnKey) {
     case "sessionState":
-      let chipColor = "primary";
+      let chipColor:
+        | "danger"
+        | "default"
+        | "primary"
+        | "secondary"
+        | "success"
+        | "warning"
+        | undefined = "primary";
       switch (cellValue) {
         case "Pending":
           chipColor = "warning";
@@ -32,7 +44,14 @@ const RenderCellNew = ({ data, columnKey }) => {
       );
 
     case "sessionType":
-      let chipType = "default";
+      let chipType:
+        | "danger"
+        | "default"
+        | "primary"
+        | "secondary"
+        | "success"
+        | "warning"
+        | undefined = "default";
       switch (cellValue) {
         case "Burn":
           chipType = "warning";

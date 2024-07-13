@@ -25,6 +25,8 @@ interface User {
   isActive: boolean;
   mainType: string;
   subType: string;
+  limitedRepeatance: boolean;
+  inSession: string;
 }
 
 const TableNew: React.FC = () => {
@@ -193,11 +195,11 @@ const TableNew: React.FC = () => {
                 <SelectItem key="" value="">
                   Select {column.name}
                 </SelectItem>
-                {column.filterOptions?.map((option) => (
+                {/* {column.filterOptions?.map((option) => (
                   <SelectItem key={option} value={option}>
                     {option}
                   </SelectItem>
-                ))}
+                ))} */}
               </Select>
             )}
           </div>
