@@ -12,7 +12,7 @@ import { SettingsIcon } from "@/components/icons/sidebar/settings-icon";
 import { TableWrapper } from "@/components/table/table";
 
 import { AddUser } from "./add-user";
-import UploadForm from "../medias/words/UploadForm";
+// import UploadForm from "../medias/words/UploadForm";
 import Tablebots from "../botstable/Tablebots";
 
 export const Accounts = () => {
