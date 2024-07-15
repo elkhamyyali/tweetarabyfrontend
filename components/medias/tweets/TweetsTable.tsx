@@ -47,12 +47,12 @@ const TweetTable: React.FC = () => {
       <Button
         onClick={handleDeleteSelected}
         disabled={selectedRows.length === 0}
-        className="mb-4"
+        className="md:p-2 ml-3 mb-2"
         color="danger"
       >
         Delete Selected
       </Button>
-      <Table aria-label="Tweet Table Example">
+      <Table aria-label="Tweet Table Example" className="p-5 md:p-0">
         <TableHeader>
           <TableColumn>
             <Checkbox

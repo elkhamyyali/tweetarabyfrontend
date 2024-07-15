@@ -10,36 +10,33 @@ import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { UsersIcon } from "@/components/icons/breadcrumb/users-icon";
 import { SettingsIcon } from "@/components/icons/sidebar/settings-icon";
 import { TableWrapper } from "@/components/table/table";
-
 import { AddUser } from "./add-user";
-// import UploadForm from "../medias/words/UploadForm";
 import Tablebots from "../botstable/Tablebots";
 
 export const Accounts = () => {
   return (
-    <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
-      <ul className="flex">
-        <li className="flex gap-2">
+    <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4 px-4 md:px-6">
+      <ul className="flex flex-wrap gap-2 mb-4">
+        <li className="flex gap-2 items-center">
           <HouseIcon />
           <Link href={"/"}>
             <span>Home</span>
           </Link>
-          <span> / </span>{" "}
+          <span> / </span>
         </li>
-
-        <li className="flex gap-2">
+        <li className="flex gap-2 items-center">
           <UsersIcon />
           <span>Users</span>
-          <span> / </span>{" "}
+          <span> / </span>
         </li>
-        <li className="flex gap-2">
+        <li className="flex gap-2 items-center">
           <span>List</span>
         </li>
       </ul>
 
       <h3 className="text-xl font-semibold">All Accounts</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
-        <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
+        <div className="flex items-center gap-3 flex-wrap md:flex-nowrap w-full md:w-auto">
           <Input
             classNames={{
               input: "w-full",
@@ -52,15 +49,14 @@ export const Accounts = () => {
           <InfoIcon />
           <DotsIcon />
         </div>
-        <div className="flex flex-row gap-3.5 flex-wrap">
+        <div className="flex flex-row gap-3.5 flex-wrap w-full md:w-auto justify-center">
           <AddUser />
-          {/* <UploadForm /> */}
         </div>
       </div>
-      <div className="max-w-[95rem] mx-auto w-full">
+      <div className="max-w-[95rem] mx-auto w-full ">
         <TableWrapper />
       </div>
-      <div className="max-w-[95rem] mx-auto w-full mt-20">
+      <div className="max-w-[95rem] mx-auto w-full mt-20 ">
         <Tablebots />
       </div>
     </div>

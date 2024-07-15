@@ -75,12 +75,16 @@ const TableExample = () => {
           disabled={selectedRows.length === 0}
           color="danger"
           onClick={handleDeleteSelected}
+          className="md:p-2 ml-3"
         >
           Delete Selected
         </Button>
       </div>
 
-      <Table aria-label="Example table with custom cells">
+      <Table
+        aria-label="Example table with custom cells"
+        className="p-5 md:p-0"
+      >
         <TableHeader>
           <TableColumn>
             <Checkbox

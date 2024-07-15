@@ -168,7 +168,7 @@ const TableNew: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <div className="flex flex-wrap gap-4 mb-4">
+      <div className="flex flex-wrap gap-4 mb-4 justify-center">
         <Input
           type="text"
           placeholder="Search..."
@@ -179,7 +179,7 @@ const TableNew: React.FC = () => {
         {columns.map((column) => (
           <div
             key={column.uid}
-            className="flex flex-col md:flex-row md:items-center md:space-x-4"
+            className="flex flex-col w-full md:w-auto items-center"
           >
             {(column.uid === "isActive" ||
               column.uid === "mainType" ||
@@ -189,7 +189,7 @@ const TableNew: React.FC = () => {
                 onChange={(e) =>
                   handleFilterChange(column.uid as keyof User, e.target.value)
                 }
-                className="rounded w-full md:w-40"
+                className="rounded w-2/3 md:w-40"
                 label={column.name}
               >
                 <SelectItem key="" value="">
@@ -206,7 +206,10 @@ const TableNew: React.FC = () => {
         ))}
       </div>
 
-      <Table aria-label="Example table with custom cells">
+      <Table
+        aria-label="Example table with custom cells"
+        className="p-5 md:p-0"
+      >
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn
@@ -254,7 +257,7 @@ const TableNew: React.FC = () => {
         </TableBody>
       </Table>
 
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4">
         <div className="flex justify-center items-center space-x-4">
           <Button
             disabled={currentPage === 1}

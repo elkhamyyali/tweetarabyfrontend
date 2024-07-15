@@ -53,11 +53,12 @@ const CheckboxTableWithDeleteButton: React.FC = () => {
           disabled={selectedRows.length === 0}
           color="danger"
           onClick={handleDeleteSelected}
+          className="md:p-2 ml-3"
         >
           Delete Selected
         </Button>
       </div>
-      <Table aria-label="Checkbox Table Example">
+      <Table aria-label="Checkbox Table Example" className="p-5 md:p-0">
         <TableHeader>
           <TableColumn>
             <Checkbox

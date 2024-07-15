@@ -225,7 +225,7 @@ const Tablebots: React.FC = () => {
             column.uid !== "checkBotOffline" && (
               <div
                 key={column.uid}
-                className="flex flex-col md:flex-row md:items-center md:space-x-4"
+                className="flex flex-col md:flex-row md:items-center md:space-x-4 w-full md:w-auto"
               >
                 <label className="text-center">{column.name}</label>
                 {column.uid === "inSession" ? (
@@ -234,7 +234,7 @@ const Tablebots: React.FC = () => {
                     placeholder="Filter By Session ID"
                     value={filters.id || ""}
                     onChange={(e) => handleFilterChange("id", e.target.value)}
-                    className="p-2 rounded w-full md:w-auto"
+                    className="p-2 rounded w-full"
                   />
                 ) : column.filterOptions ? (
                   <Select
@@ -262,54 +262,56 @@ const Tablebots: React.FC = () => {
         )}
       </div>
 
-      <Table aria-label="Example table with custom cells">
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn
-              key={column.uid}
-              hideHeader={column.uid === "actions"}
-              align={column.uid === "actions" ? "center" : "start"}
-              onClick={() => handleSort(column.uid)}
-            >
-              {column.uid === "selectAll" ? (
-                <Checkbox
-                  isSelected={selectedRows.length === paginatedUsers.length}
-                  onChange={handleSelectAll}
-                />
-              ) : (
-                column.name
-              )}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody items={paginatedUsers}>
-          {(item) => (
-            <TableRow
-              key={item.id}
-              className="border-b border-dashed border-[#F1F1F4] dark:border-[#26272F]"
-            >
-              {(columnKey) => (
-                <TableCell key={columnKey}>
-                  {columnKey === "selectAll" ? (
-                    <Checkbox
-                      checked={selectedRows.includes(item.id)}
-                      onChange={(e) => handleCheckboxChange(e, item.id)}
-                    />
-                  ) : columnKey === "id" ? (
-                    item.id
-                  ) : (
-                    <RenderCell
-                      user={item}
-                      columnKey={columnKey}
-                      columnData={columns}
-                    />
-                  )}
-                </TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      <div className="overflow-x-auto">
+        <Table aria-label="Example table with custom cells">
+          <TableHeader columns={columns}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                hideHeader={column.uid === "actions"}
+                align={column.uid === "actions" ? "center" : "start"}
+                onClick={() => handleSort(column.uid)}
+              >
+                {column.uid === "selectAll" ? (
+                  <Checkbox
+                    isSelected={selectedRows.length === paginatedUsers.length}
+                    onChange={handleSelectAll}
+                  />
+                ) : (
+                  column.name
+                )}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody items={paginatedUsers}>
+            {(item) => (
+              <TableRow
+                key={item.id}
+                className="border-b border-dashed border-[#F1F1F4] dark:border-[#26272F]"
+              >
+                {(columnKey) => (
+                  <TableCell key={columnKey}>
+                    {columnKey === "selectAll" ? (
+                      <Checkbox
+                        checked={selectedRows.includes(item.id)}
+                        onChange={(e) => handleCheckboxChange(e, item.id)}
+                      />
+                    ) : columnKey === "id" ? (
+                      item.id
+                    ) : (
+                      <RenderCell
+                        user={item}
+                        columnKey={columnKey}
+                        columnData={columns}
+                      />
+                    )}
+                  </TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       <div className="flex justify-end">
         <Pagination

@@ -86,7 +86,7 @@ const customers: Customer[] = [
 const Thirdtable: React.FC = () => {
   return (
     <div className="col-span-full xl:col-span-12 shadow-md rounded-lg border border-slate-200">
-      <header className="px-5 pt-4 flex justify-between content-center">
+      {/* <header className="px-5 pt-4 flex justify-between content-center">
         <div>
           <h2 className="font-semibold text-slate-800">Top Channels</h2>
           <p
@@ -220,7 +220,7 @@ const Thirdtable: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -135,7 +135,7 @@ export const TableWrapper = () => {
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <div className="flex flex-wrap gap-4 mb-4">
+      <div className="flex flex-wrap gap-4 mb-4 p-4">
         <Input
           type="text"
           placeholder="Search..."
@@ -149,7 +149,7 @@ export const TableWrapper = () => {
             column.uid !== "username" && (
               <div
                 key={column.uid}
-                className="flex flex-col md:flex-row md:items-center md:space-x-4"
+                className="flex flex-col md:flex-row md:items-center md:space-x-4 w-full md:w-auto"
               >
                 <label className="text-center">{column.name}</label>
                 {column.filterOptions ? (
@@ -191,7 +191,7 @@ export const TableWrapper = () => {
             )
         )}
         {/* Add the "In Session" filter */}
-        <div className="flex flex-col md:flex-row md:items-center md:space-x-4">
+        <div className="flex flex-col md:flex-row md:items-center md:space-x-4 w-full md:w-auto">
           <label className="text-center">In Session</label>
           <Select
             value={

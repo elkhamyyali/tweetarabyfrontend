@@ -58,7 +58,7 @@ const TweetTable: React.FC = () => {
 
   return (
     <div>
-      <Table aria-label="Tweet Table Example">
+      <Table aria-label="Tweet Table Example" className="p-5 md:p-0">
         <TableHeader>
           <TableColumn>
             <Checkbox

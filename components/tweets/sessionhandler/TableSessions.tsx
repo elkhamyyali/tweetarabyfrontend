@@ -161,7 +161,7 @@ const TableSessions: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <div className="flex flex-wrap gap-4 mb-4">
+      <div className="flex flex-wrap gap-4 mb-4 justify-center">
         <Input
           type="text"
           placeholder="Search by Session ID..."
@@ -169,12 +169,12 @@ const TableSessions: React.FC = () => {
           onChange={handleSearch}
           className="p-2 rounded w-full md:w-auto"
         />
-        {/* {columns.map(
+        {columns.map(
           (column) =>
             column.uid !== "checkbox" && (
               <div
                 key={column.uid}
-                className="flex flex-col md:flex-row md:items-center md:space-x-4"
+                className="flex flex-col w-full md:w-auto items-center"
               >
                 {column.uid === "isActive" ||
                 column.uid === "sessionState" ||
@@ -184,23 +184,28 @@ const TableSessions: React.FC = () => {
                     onChange={(e) =>
                       handleFilterChange(column.uid, e.target.value)
                     }
-                    className="rounded w-full md:w-40"
+                    className="rounded w-2/3 md:w-40" // Adjust width for mobile and desktop
                     label={column.name}
                   >
-                    <SelectItem value="">Select {column.name}</SelectItem>
-                    {column.filterOptions?.map((option) => (
+                    <SelectItem value="" key={""}>
+                      Select {column.name}
+                    </SelectItem>
+                    {/* {column.filterOptions?.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}
                       </SelectItem>
-                    ))}
+                    ))} */}
                   </Select>
                 ) : null}
               </div>
             )
-        )} */}
+        )}
       </div>
 
-      <Table aria-label="Sessions table with custom cells">
+      <Table
+        aria-label="Sessions table with custom cells"
+        className="p-5 md:p-0"
+      >
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn
@@ -243,7 +248,7 @@ const TableSessions: React.FC = () => {
         </TableBody>
       </Table>
 
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4">
         <div className="flex justify-center items-center space-x-4">
           <Button
             disabled={currentPage === 1}

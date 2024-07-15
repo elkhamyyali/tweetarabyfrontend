@@ -66,11 +66,15 @@ const TableWithCheckboxInHeader = () => {
           disabled={selectedRows.length === 0}
           onClick={handleDeleteSelected}
           color="danger"
+          className="md:p-2 ml-3"
         >
           Delete Selected
         </Button>
       </div>
-      <Table aria-label="Table with checkboxes in header">
+      <Table
+        aria-label="Table with checkboxes in header"
+        className="p-5 md:p-0"
+      >
         <TableHeader>
           <TableColumn>
             <Checkbox
