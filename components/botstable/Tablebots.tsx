@@ -248,11 +248,11 @@ const Tablebots: React.FC = () => {
                     <SelectItem key={""} value="">
                       Select {column.name}
                     </SelectItem>
-                    {/* {column.filterOptions.map((option) => (
+                    {column.filterOptions.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}
                       </SelectItem>
-                    ))} */}
+                    ))}
                   </Select>
                 ) : (
                   ""
