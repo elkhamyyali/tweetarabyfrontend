@@ -183,25 +183,26 @@ const TableNew: React.FC = () => {
           >
             {(column.uid === "isActive" ||
               column.uid === "mainType" ||
-              column.uid === "subType") && (
-              <Select
-                value={filters[column.uid] || ""}
-                onChange={(e) =>
-                  handleFilterChange(column.uid as keyof User, e.target.value)
-                }
-                className="rounded w-2/3 md:w-40"
-                label={column.name}
-              >
-                <SelectItem key="" value="">
-                  Select {column.name}
-                </SelectItem>
-                {column.filterOptions?.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
+              column.uid === "subType") &&
+              column.filterOptions && (
+                <Select
+                  value={filters[column.uid] || ""}
+                  onChange={(e) =>
+                    handleFilterChange(column.uid as keyof User, e.target.value)
+                  }
+                  className="rounded w-2/3 md:w-40"
+                  label={column.name}
+                >
+                  <SelectItem key="" value="">
+                    Select {column.name}
                   </SelectItem>
-                ))}
-              </Select>
-            )}
+                  {column.filterOptions.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </Select>
+              )}
           </div>
         ))}
       </div>
