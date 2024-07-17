@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 interface AccountGroup {
   name: string;
@@ -11,27 +11,13 @@ interface AccountGroup {
   detail_url: string;
 }
 
-const AccountGroupTable: React.FC = () => {
-  const [accountGroups, setAccountGroups] = useState<AccountGroup[]>([]);
-  const [loading, setLoading] = useState(true);
+interface AccountGroupTableProps {
+  accountGroups: AccountGroup[];
+}
 
-  useEffect(() => {
-    const fetchAccountGroups = async () => {
-      const response = await fetch(
-        "https://tweetaraby.xyz/api_admin/accounts/accountgroup/list/"
-      );
-      const data: AccountGroup[] = await response.json();
-      setAccountGroups(data);
-      setLoading(false);
-    };
-
-    fetchAccountGroups();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
+const AccountGroupTable: React.FC<AccountGroupTableProps> = ({
+  accountGroups = [],
+}) => {
   if (accountGroups.length === 0) {
     return <div>No data available</div>;
   }
@@ -72,4 +58,28 @@ const AccountGroupTable: React.FC = () => {
   );
 };
 
-export default AccountGroupTable;
+export async function getStaticProps() {
+  const response = await fetch(
+    "https://tweetaraby.xyz/api_admin/accounts/accountgroup/list/"
+  );
+  const accountGroups: AccountGroup[] = await response.json();
+
+  return {
+    props: {
+      accountGroups: accountGroups || [],
+    },
+  };
+}
+
+const AccountGroupsPage: React.FC<AccountGroupTableProps> = ({
+  accountGroups,
+}) => {
+  return (
+    <div>
+      <h1>Account Groups</h1>
+      <AccountGroupTable accountGroups={accountGroups} />
+    </div>
+  );
+};
+
+export default AccountGroupsPage;
