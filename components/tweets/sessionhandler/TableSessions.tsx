@@ -190,11 +190,11 @@ const TableSessions: React.FC = () => {
                     <SelectItem value="" key={""}>
                       Select {column.name}
                     </SelectItem>
-                    {/* {column.filterOptions?.map((option) => (
+                    {column.filterOptions?.map((option) => (
                       <SelectItem key={option} value={option}>
                         {option}
                       </SelectItem>
-                    ))} */}
+                    ))}
                   </Select>
                 ) : null}
               </div>
