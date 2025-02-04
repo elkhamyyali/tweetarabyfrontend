@@ -4,6 +4,8 @@ import accountGroupsReducer from "./accountgroup/accountGroupsSlice"
 import accountGroupDetailReducer from "./accountgroup/accountGroupDetailSlice";
 import burnerAccountsReducer from "./burneraccount/burnerAccountSlice"
 import burnerAccountDetailReducer from "./burneraccount/burnerAccountDetailSlice";
+import premiumAccountsReducer from "./premiumaccount/premiumAccountSlice"
+import premiumAccountDetailReducer from "./premiumaccount/premiumAccountDetailSlice";
 import type { ApiClient } from "@/lib/api-client"
 
 export const createStore = (apiClient: ApiClient) => {
@@ -14,6 +16,8 @@ export const createStore = (apiClient: ApiClient) => {
       accountGroupDetail: accountGroupDetailReducer,
       burnerAccounts: burnerAccountsReducer,
       burnerAccountDetail: burnerAccountDetailReducer,
+      premiumAccounts: premiumAccountsReducer,
+      premiumAccountDetail: premiumAccountDetailReducer,
     },
     preloadedState: {
       api: { client: apiClient, siteContext: null, loading: false, error: null },
