@@ -99,15 +99,15 @@ export default function AccountGroupsTable() {
   }
 
   return (
-    <div className="flex gap-4">
-      {/* Filters Section */}
-      <div className="w-3/4  rounded-lg ">
-        <ReusableTable data={filteredData} columns={columns} />
+    <div className="flex flex-col-reverse lg:flex-row-reverse gap-4">
+      {/* Filters Section (Above on Mobile, Left on Larger Screens) */}
+      <div className="w-full md:w-1/4 order-1 md:order-none">
+        <DynamicFilterComponent data={groups} onFilter={handleFilter} />
       </div>
 
       {/* Table Section */}
-      <div className="w-1/4">
-        <DynamicFilterComponent data={groups} onFilter={handleFilter} />
+      <div className="w-full md:w-3/4 rounded-lg">
+        <ReusableTable data={filteredData} columns={columns} />
       </div>
     </div>
   );

@@ -8,9 +8,58 @@ import withTable from "@/components/tables/ReusableTable";
 import Link from "next/link";
 import { Chip } from "@nextui-org/react";
 import { X } from "lucide-react";
+import DynamicFilterComponent from "@/components/burneraccount/DynamicFilterComponent";
+const stateClassMap = {
+  All: {
+    base: "bg-gray-300 border-gray-400 shadow-gray-400/30",
+    content: "text-black",
+  },
+  New: {
+    base: "bg-blue-500 border-blue-600 shadow-blue-500/30",
+    content: "text-green-500",
+  },
+  "To Check": {
+    base: "bg-yellow-500 border-yellow-600 shadow-yellow-500/30",
+    content: "text-black",
+  },
+  checked: {
+    base: "bg-[#CBEEDA] border-green-600 shadow-green-500/30",
+    content: "text-green-500",
+  },
+  Old: {
+    base: "bg-purple-500 border-purple-600 shadow-purple-500/30",
+    content: "text-white",
+  },
+  BackUse: {
+    base: "bg-purple-400 border-purple-500 shadow-purple-400/30",
+    content: "text-white",
+  },
+  "In Session": {
+    base: "bg-green-600 border-green-700 shadow-green-600/30",
+    content: "text-white",
+  },
+  "Used Recheck": {
+    base: "bg-orange-500 border-orange-600 shadow-orange-500/30",
+    content: "text-white",
+  },
+  recheck: {
+    base: "bg-[#FDEDD3] border-yellow-700 shadow-yellow-600/30",
+    content: "text-[#F5A524]",
+  },
+  "Wrong Auth": {
+    base: "bg-red-500 border-red-600 shadow-red-500/30",
+    content: "text-white",
+  },
+  "Captcha Mail": {
+    base: "bg-red-700 border-red-800 shadow-red-700/30",
+    content: "text-white",
+  },
+  Suspended: {
+    base: "bg-gray-600 border-gray-700 shadow-gray-600/30",
+    content: "text-white",
+  },
+};
 
-// Define 11 columns matching the image layout.
-// Adjust labels and render functions as needed.
 const columns = [
   {
     key: "name",
@@ -46,9 +95,23 @@ const columns = [
   },
   {
     key: "created_at",
-    label: "CREATED AT",
-    render: (row) => new Date(row.created_at).toLocaleString(),
+    label: "ACCOUNT STATE",
+    render: (row) => {
+      const stateClasses = stateClassMap[row.state] || stateClassMap.All;
+
+      return (
+        <Chip
+          classNames={{
+            base: stateClasses.base,
+            content: stateClasses.content,
+          }}
+        >
+          {row.state || "Unknown"}
+        </Chip>
+      );
+    },
   },
+
   {
     key: "is_active",
     label: "STATUS",
@@ -124,17 +187,16 @@ export default function BurnerAccountTable() {
   }
 
   return (
-    <div className="flex gap-4">
-      {/* Table Section */}
-      <div className="w-full rounded-lg">
-        <ReusableTable data={filteredData} columns={columns} />
-      </div>
-      {/* Uncomment below if you want to add a dynamic filter component */}
-      {/*
-      <div className="w-1/4">
+    <div className="flex flex-col-reverse lg:flex-row-reverse gap-4">
+      {/* Filters Section (Above on Mobile, Left on Larger Screens) */}
+      <div className="w-full md:w-1/4 order-1 md:order-none">
         <DynamicFilterComponent data={groups} onFilter={setFilteredData} />
       </div>
-      */}
+
+      {/* Table Section */}
+      <div className="w-full md:w-3/4 rounded-lg">
+        <ReusableTable data={filteredData} columns={columns} />
+      </div>
     </div>
   );
 }
