@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Select, SelectItem } from "@nextui-org/react";
+import { Select, SelectItem, Input } from "@nextui-org/react";
 
 const DynamicFilterComponent = ({ data, onFilter }) => {
   // State to hold filter values
   const [filters, setFilters] = useState({
     group_main_type: "all",
     group_sub_type: "all",
+    search: "",
   });
 
   // Generate unique options for a specific key
@@ -23,31 +24,45 @@ const DynamicFilterComponent = ({ data, onFilter }) => {
 
   // Handle dropdown changes and apply filters immediately
   const handleChange = (key, value) => {
-    const newFilters = {
-      ...filters,
-      [key]: value,
-    };
-
+    const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
+    applyFilters(newFilters);
+  };
 
-    // Apply filters
+  // Apply filters based on state
+  const applyFilters = (filterValues) => {
     const filteredData = data.filter((item) => {
       const mainTypeMatch =
-        newFilters.group_main_type === "all" ||
-        item.group_main_type === newFilters.group_main_type;
+        filterValues.group_main_type === "all" ||
+        item.group_main_type === filterValues.group_main_type;
 
       const subTypeMatch =
-        newFilters.group_sub_type === "all" ||
-        item.group_sub_type === newFilters.group_sub_type;
+        filterValues.group_sub_type === "all" ||
+        item.group_sub_type === filterValues.group_sub_type;
 
-      return mainTypeMatch && subTypeMatch;
+      const searchMatch =
+        filterValues.search === "" ||
+        item.name.toLowerCase().includes(filterValues.search.toLowerCase());
+
+      return mainTypeMatch && subTypeMatch && searchMatch;
     });
 
     onFilter(filteredData);
   };
 
   return (
-    <div className="flex-col  gap-y-4 p-4  rounded-lg mb-4">
+    <div className="flex flex-col gap-y-4 p-4 rounded-lg mb-4">
+      {/* Search Input */}
+      <Input
+        label="Search"
+        placeholder="Search by name..."
+        value={filters.search}
+        onChange={(e) => handleChange("search", e.target.value)}
+        color="primary"
+        className="mb-4"
+      />
+
+      {/* Main Type Filter */}
       <Select
         color="primary"
         label="MAIN TYPE"
@@ -65,6 +80,7 @@ const DynamicFilterComponent = ({ data, onFilter }) => {
         ))}
       </Select>
 
+      {/* Sub Type Filter */}
       <Select
         label="SUB TYPE"
         color="primary"

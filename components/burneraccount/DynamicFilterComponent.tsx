@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Select, SelectItem } from "@nextui-org/react";
+import { Select, SelectItem, Input } from "@nextui-org/react";
 
 const DynamicFilterComponent = ({ data, onFilter }) => {
   // Filter configuration array
@@ -33,9 +33,12 @@ const DynamicFilterComponent = ({ data, onFilter }) => {
   ];
 
   // Initialize filters state based on config
-  const initialFilters = Object.fromEntries(
-    filterConfig.map((filter) => [filter.key, filter.defaultValue])
-  );
+  const initialFilters = {
+    search: "", // Added search field
+    ...Object.fromEntries(
+      filterConfig.map((filter) => [filter.key, filter.defaultValue])
+    ),
+  };
 
   const [filters, setFilters] = useState(initialFilters);
 
@@ -60,12 +63,28 @@ const DynamicFilterComponent = ({ data, onFilter }) => {
   const handleChange = (key, value) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
+    applyFilters(newFilters);
+  };
 
-    // Apply all filters
+  // Apply all filters
+  const applyFilters = (filterValues) => {
     const filteredData = data.filter((item) => {
-      return Object.entries(newFilters).every(([filterKey, filterValue]) => {
-        return filterValue === "all" || String(item[filterKey]) === filterValue;
-      });
+      const matchesAllFilters = Object.entries(filterValues).every(
+        ([filterKey, filterValue]) => {
+          if (filterKey === "search") {
+            return (
+              filterValue === "" ||
+              (item.name?.toLowerCase() || "").includes(
+                filterValue.toLowerCase()
+              )
+            );
+          }
+          return (
+            filterValue === "all" || String(item[filterKey]) === filterValue
+          );
+        }
+      );
+      return matchesAllFilters;
     });
 
     onFilter(filteredData);
@@ -79,6 +98,16 @@ const DynamicFilterComponent = ({ data, onFilter }) => {
 
   return (
     <div className="flex flex-col gap-y-4 p-4 rounded-lg mb-4">
+      {/* Search Input */}
+      <Input
+        label="Search"
+        placeholder="Search by name..."
+        value={filters.search}
+        onChange={(e) => handleChange("search", e.target.value)}
+        color="primary"
+        className="mb-4"
+      />
+
       {filterConfig.map((filter) => (
         <Select
           key={filter.key}

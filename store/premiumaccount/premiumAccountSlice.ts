@@ -16,7 +16,7 @@ const initialState: BurnerAccountState = {
 }
 
 export const fetchPremiumAccounts = createAsyncThunk<BurnerAccount[], void, { state: RootState }>(
-  "burnerAccounts/fetchAll",
+  "premiumAccounts/fetchAll",
   async (_, { getState, rejectWithValue }) => {
     try {
       const state = getState()

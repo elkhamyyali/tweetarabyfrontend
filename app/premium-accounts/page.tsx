@@ -161,7 +161,7 @@ const ReusableTable = withTable(BaseTable);
 export default function BurnerAccountTable() {
   const dispatch = useDispatch<AppDispatch>();
   const { groups, loading, error } = useSelector(
-    (state: RootState) => state.burnerAccounts
+    (state: RootState) => state.premiumAccounts
   );
   const [filteredData, setFilteredData] = useState(groups);
 
