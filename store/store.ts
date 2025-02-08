@@ -1,12 +1,16 @@
-import { configureStore } from "@reduxjs/toolkit"
-import apiReducer from "./apiSlice"
-import accountGroupsReducer from "./accountgroup/accountGroupsSlice"
+import { configureStore } from "@reduxjs/toolkit";
+import apiReducer from "./apiSlice";
+import accountGroupsReducer from "./accountgroup/accountGroupsSlice";
 import accountGroupDetailReducer from "./accountgroup/accountGroupDetailSlice";
-import burnerAccountsReducer from "./burneraccount/burnerAccountSlice"
+import burnerAccountsReducer from "./burneraccount/burnerAccountSlice";
 import burnerAccountDetailReducer from "./burneraccount/burnerAccountDetailSlice";
-import premiumAccountsReducer from "./premiumaccount/premiumAccountSlice"
+import premiumAccountsReducer from "./premiumaccount/premiumAccountSlice";
 import premiumAccountDetailReducer from "./premiumaccount/premiumAccountDetailSlice";
-import type { ApiClient } from "@/lib/api-client"
+import platformUsersReducer from "./platformusers/platformUserSlice";
+import platformUserDetailReducer from "./platformusers/platformUserDetailSlice";
+import botsReducer from "./bots/BotSlice";
+import botDetailReducer from "./bots/BotDetailSlice";
+import type { ApiClient } from "@/lib/api-client";
 
 export const createStore = (apiClient: ApiClient) => {
   return configureStore({
@@ -18,13 +22,16 @@ export const createStore = (apiClient: ApiClient) => {
       burnerAccountDetail: burnerAccountDetailReducer,
       premiumAccounts: premiumAccountsReducer,
       premiumAccountDetail: premiumAccountDetailReducer,
+      platformUsers: platformUsersReducer,
+      platformUserDetail: platformUserDetailReducer,
+      bots: botsReducer,
+      botDetail: botDetailReducer,
     },
     preloadedState: {
       api: { client: apiClient, siteContext: null, loading: false, error: null },
     },
-  })
-}
+  });
+};
 
-export type RootState = ReturnType<ReturnType<typeof createStore>["getState"]>
-export type AppDispatch = ReturnType<typeof createStore>["dispatch"]
-
+export type RootState = ReturnType<ReturnType<typeof createStore>["getState"]>;
+export type AppDispatch = ReturnType<typeof createStore>["dispatch"];
