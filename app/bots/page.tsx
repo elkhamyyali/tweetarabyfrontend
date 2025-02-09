@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState, AppDispatch } from "@/store/store";
 import withTable from "@/components/tables/ReusableTable";
 import Link from "next/link";
-import { Check, X } from "lucide-react";
+import { Check, Minus, X } from "lucide-react";
 import { fetchBots } from "@/store/bots/BotSlice";
 import DynamicFilterComponent from "@/components/Bots/BotsFilters";
 
@@ -71,7 +71,8 @@ const columns = [
   {
     key: "campaign",
     label: "CAMPAIGN",
-    render: (row: any) => row.campaign,
+    render: (row: any) =>
+      row.campaign ? row.campaign : <Minus size={18} color="gray" />,
   },
 ];
 
