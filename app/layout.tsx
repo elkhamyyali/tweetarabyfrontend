@@ -37,6 +37,7 @@ export default function RootLayout({
               p-6 
               md:p-8 
               lg:p-10
+              mt-8 md:mt-0 
             "
           >
             <NextUIProvider>
