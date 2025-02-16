@@ -41,7 +41,7 @@ async getHeaders(): Promise<Headers> {
         'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive',
         'Referer': 'https://tweetaraby.xyz',
-        'Cookie': `csrftoken=${this.csrfToken}`
+        'Cookie': `csrftoken=ENQuqPwXFuRvSCBJvohu8jf5xxyy5RCx`
     });
 }
 
