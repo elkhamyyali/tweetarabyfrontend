@@ -29,3 +29,31 @@ export async function getAccountGroupDetail(id: string, apiClient: ApiClient): P
   return response.json()
 }
 
+export async function deleteAccountGroup(id: string, apiClient: ApiClient): Promise<void> {
+  const headers = await apiClient.getHeaders();
+
+  // Convert Headers object to a plain object for logging
+  const headersObj: Record<string, string> = {};
+  headers.forEach((value, key) => {
+    headersObj[key] = value;
+  });
+
+  console.log("Request Headers:", headersObj); // Log headers in a readable format
+
+  try {
+    const response = await fetch(`${apiClient.getBaseUrl()}/api_admin/accounts/accountgroup/${id}/delete/`, {
+      method: "DELETE",
+      headers,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      console.error("Delete failed:", errorData);
+      throw new Error(errorData?.detail || "Failed to delete account group");
+    }
+  } catch (error) {
+    console.error("Delete request failed:", error);
+    throw error;
+  }
+}
+
